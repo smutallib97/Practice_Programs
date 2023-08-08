@@ -30,15 +30,15 @@ func calculatePercentage(students []Student) {
 	}
 }
 
-func calculateThresholdStudents(students []Student, threshold float32) []Student {
-	var aboveThresholdStudents []Student
-	for _, student := range students {
-		if student.Percentage >= threshold {
-			aboveThresholdStudents = append(aboveThresholdStudents, student)
-		}
-	}
-	return aboveThresholdStudents
-}
+// func calculateThresholdStudents(students []Student, threshold float32) []Student {
+// 	var aboveThresholdStudents []Student
+// 	for _, student := range students {
+// 		if student.Percentage >= threshold {
+// 			aboveThresholdStudents = append(aboveThresholdStudents, student)
+// 		}
+// 	}
+// 	return aboveThresholdStudents
+// }
 
 // func findHighestPercentageFromStudents(students []Student)  {
 
@@ -49,6 +49,26 @@ func calculateThresholdStudents(students []Student, threshold float32) []Student
 // 	}
 // }
 
+func filterStudents(students []Student, filterfunc func(Student) bool) []Student {
+	var filteredStudents []Student
+	for _, student := range students {
+		if filterfunc(student) {
+			filteredStudents = append(filteredStudents, student)
+		}
+	}
+	return filteredStudents
+}
+
+func findTopperStudent(students []Student, compareFunc func(Student, Student) bool) Student {
+	topperStudent := students[0]
+	for _, student := range students {
+		if compareFunc(student, topperStudent) {
+			topperStudent = student
+		}
+	}
+	return topperStudent
+}
+
 func main() {
 
 	studentDetails := []Student{
@@ -58,6 +78,7 @@ func main() {
 		{RollNo: 4, Name: "Akhilesh", PhysicsMarks: 75, ChemistryMarks: 80, MathMarks: 70},
 		{RollNo: 5, Name: "Akram", PhysicsMarks: 54, ChemistryMarks: 60, MathMarks: 70},
 		{RollNo: 6, Name: "Shahid", PhysicsMarks: 58, ChemistryMarks: 72, MathMarks: 68},
+		{RollNo: 7, Name: "Akram", PhysicsMarks: 40, ChemistryMarks: 40, MathMarks: 40},
 	}
 	calculateTotalMarks(studentDetails)
 	calculatePercentage(studentDetails)
@@ -72,12 +93,35 @@ func main() {
 		fmt.Printf("Percentage : %.2f\n\n\n", student.Percentage)
 
 	}
-	var value float32
-	fmt.Print("Enter threshold: ")
-	fmt.Scan(&value)
+	//filtering students who got lower than 50 percentage
+	lowerThan50PercentageFilter := func(student Student) bool {
+		return student.Percentage < 50
+	}
+	lowerThan50PercentageStudents := filterStudents(studentDetails, lowerThan50PercentageFilter)
 
-	thresholdValue := calculateThresholdStudents(studentDetails, value)
+	fmt.Println("Number of student who got lower than 50 percentage are: ", len(lowerThan50PercentageStudents))
 
-	fmt.Printf("Number of students above or equal to %.2f : %d", value, len(thresholdValue))
+	topperComparator := func(student1, student2 Student) bool {
+		return student1.Percentage > student2.Percentage
+	}
+
+	topperStudent := findTopperStudent(studentDetails, topperComparator)
+
+	fmt.Println("\n\n Topper Student From Class is: ")
+	fmt.Printf("Roll No: %d\n", topperStudent.RollNo)
+	fmt.Printf("Student Name: %s\n", topperStudent.Name)
+	fmt.Printf("Physics Marks:%.2f\n", topperStudent.PhysicsMarks)
+	fmt.Printf("Chemistry Marks: %.2f\n", topperStudent.ChemistryMarks)
+	fmt.Printf("Math Marks: %.2f\n", topperStudent.MathMarks)
+	fmt.Printf("Totalmarks : %.2f\n", topperStudent.TotalMarks)
+	fmt.Printf("Percentage : %.2f\n\n\n", topperStudent.Percentage)
+
+	// var value float32
+	// fmt.Print("Enter threshold: ")
+	// fmt.Scan(&value)
+
+	// thresholdValue := calculateThresholdStudents(studentDetails, value)
+
+	// fmt.Printf("Number of students above or equal to %.2f : %d", value, len(thresholdValue))
 
 }
