@@ -79,6 +79,7 @@ func main() {
 		{RollNo: 5, Name: "Akram", PhysicsMarks: 54, ChemistryMarks: 60, MathMarks: 70},
 		{RollNo: 6, Name: "Shahid", PhysicsMarks: 58, ChemistryMarks: 72, MathMarks: 68},
 		{RollNo: 7, Name: "Akram", PhysicsMarks: 40, ChemistryMarks: 40, MathMarks: 40},
+		{RollNo: 8, Name: "Sayali", PhysicsMarks: 35, ChemistryMarks: 38, MathMarks: 39},
 	}
 	calculateTotalMarks(studentDetails)
 	calculatePercentage(studentDetails)
@@ -115,6 +116,20 @@ func main() {
 	fmt.Printf("Math Marks: %.2f\n", topperStudent.MathMarks)
 	fmt.Printf("Totalmarks : %.2f\n", topperStudent.TotalMarks)
 	fmt.Printf("Percentage : %.2f\n\n\n", topperStudent.Percentage)
+
+	failedComparator := func(student Student) bool {
+		return student.Percentage < 40
+	}
+	failedStudent := filterStudents(studentDetails, failedComparator)
+
+	fmt.Println("Number of student who got failed :", len(failedStudent))
+
+	physicsMarksComparator := func(student Student) bool {
+		return student.PhysicsMarks == 70
+	}
+	physicsStudent := filterStudents(studentDetails, physicsMarksComparator)
+
+	fmt.Println("Number of students who got 70 marks in physics are: ", len(physicsStudent))
 
 	// var value float32
 	// fmt.Print("Enter threshold: ")
